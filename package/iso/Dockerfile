@@ -1,9 +1,8 @@
 ARG ELEMENTAL_OS_IMAGE
+FROM ${ELEMENTAL_OS_IMAGE} AS os
 
-FROM ${ELEMENTAL_OS_IMAGE} as os
-
-COPY manifest.yaml manifest.yaml
-RUN elemental --debug --config-dir . build-iso -o /output -n "elemental-dev" dir:/
+COPY package/iso/manifest.yaml manifest.yaml
+RUN elemental --debug --config-dir . build-iso -o /output -n "elemental-archlinux-dev" dir:/
 
 FROM busybox:stable
 

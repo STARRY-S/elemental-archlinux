@@ -2,22 +2,27 @@
 
 Demo project to build [elemental](https://elemental.docs.rancher.com/) custom images based on [ArchLinux](https://wiki.archlinux.org).
 
-> - [How to build and use custom OS images](https://elemental.docs.rancher.com/custom-images)
-> - [Dockerfile - Elemental GitHub Repo](https://github.com/rancher/elemental/tree/main/.obs/dockerfile)
+Related docs:
+- [How to build and use custom OS images](https://elemental.docs.rancher.com/custom-images)
+- [Dockerfile - Elemental GitHub Repo](https://github.com/rancher/elemental/tree/main/.obs/dockerfile)
 
 ## Usage
 
 > WIP
 
+```sh
+#!/bin/bash
+
+export REGISTRY="127.0.0.1:5000"
+export REPO="library"
+export TAG="latest"
+
+make image
+```
+
 ## Demo
 
-![](images/grub.png)
-
-![](images/lsmod.png)
-
-![](images/nvidia-smi.png)
-
-![](images/gpu-benchmark.png)
+> WIP
 
 ## LICENSE
 

@@ -1,0 +1,28 @@
+[
+  {
+      "metadata": {
+          "name": "archlinux-dev-os"
+      },
+      "spec": {
+          "version": "v0.1.0",
+          "type": "container",
+          "metadata": {
+              "upgradeImage": "%REGISTRY%/%REPO%/elemental-archlinux-os-container:%TAG%",
+              "displayName": "Arch Linux OS Container - DEV"
+          }
+      }
+  },
+  {
+    "metadata": {
+        "name": "archlinux-dev-iso"
+    },
+    "spec": {
+        "version": "v0.1.0",
+        "type": "iso",
+        "metadata": {
+            "uri": "%REGISTRY%/%REPO%/elemental-archlinux-iso-image:%TAG%",
+            "displayName": "Arch Linux ISO - DEV"
+        }
+    }
+  }
+]
