@@ -1,14 +1,18 @@
 # Elemental Custom Images - ArchLinux
 
-Demo project to build [elemental](https://elemental.docs.rancher.com/) custom images based on [ArchLinux](https://wiki.archlinux.org).
+Demo project to use [elemental-toolkit](https://rancher.github.io/elemental-toolkit/docs/) to build [ArchLinux](https://wiki.archlinux.org) Elemental OS.
 
-Related docs:
+References:
+- [What is Elemental toolkit](https://rancher.github.io/elemental-toolkit/docs/)
 - [How to build and use custom OS images](https://elemental.docs.rancher.com/custom-images)
-- [Dockerfile - Elemental GitHub Repo](https://github.com/rancher/elemental/tree/main/.obs/dockerfile)
+- [Elemental Toolkit Examples](https://github.com/rancher/elemental-toolkit/tree/main/examples)
+- [SL-Micro OS Dockerfiles](https://github.com/rancher/elemental/tree/main/.obs/dockerfile)
 
 ## Usage
 
-> WIP
+> [!NOTE]
+>
+> This project is currently **Working In Progress**, use as your own risk.
 
 ```sh
 #!/bin/bash

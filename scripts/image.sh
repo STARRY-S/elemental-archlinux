@@ -52,7 +52,10 @@ docker push $REGISTRY/$REPO/elemental-archlinux-os-container:$TAG
 docker push $REGISTRY/$REPO/elemental-archlinux-iso-image:$TAG
 docker push $REGISTRY/$REPO/elemental-archlinux-channel:dev
 
-echo "Done:"
+echo
+echo "-----------------------------------------------------"
 echo $REGISTRY/$REPO/elemental-archlinux-os-container:$TAG
 echo $REGISTRY/$REPO/elemental-archlinux-iso-image:$TAG
 echo $REGISTRY/$REPO/elemental-archlinux-channel:dev
+echo "-----------------------------------------------------"
+echo "Done"

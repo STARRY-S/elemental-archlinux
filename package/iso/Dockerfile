@@ -1,9 +1,17 @@
 ARG ELEMENTAL_OS_IMAGE
 FROM ${ELEMENTAL_OS_IMAGE} AS os
+FROM ${ELEMENTAL_OS_IMAGE} AS builder
+
+WORKDIR /iso
 
 COPY package/iso/manifest.yaml manifest.yaml
-RUN elemental --debug --config-dir . build-iso -o /output -n "elemental-archlinux-dev" dir:/
+COPY --from=os / rootfs
 
-FROM busybox:stable
+RUN elemental --debug --config-dir . build-iso -o /output -n "elemental-archlinux-dev"  dir:rootfs
 
-COPY --from=os /output /elemental-iso
+FROM archlinux
+
+RUN pacman -Syy --noconfirm && \
+    pacman -S --noconfirm busybox
+
+COPY --from=builder /output /elemental-iso

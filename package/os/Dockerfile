@@ -6,13 +6,8 @@ FROM archlinux AS os
 
 ARG RANCHER_SYSTEM_AGENT_VERSION="v0.3.11"
 
-# Pre-install rsync
-RUN pacman -Syy && \
-    pacman -S --noconfirm rsync
-# Add system files
-COPY framework/ /
-RUN rsync -a /files/* / && rm -r /files
-
+COPY framework/files/etc/pacman.conf /etc/pacman.conf
+COPY framework/files/etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist
 # Install kernel & utils
 RUN pacman-key --init && \
     pacman -Syu --noconfirm && \
@@ -43,33 +38,40 @@ RUN pacman-key --init && \
         ethtool \
         bc \
         mkinitcpio \
+        dracut \
         rsync \
         efibootmgr \
         shim-signed \
         squashfs-tools \
-        dracut \
         mtools \
+        amd-ucode \
+        rsync \
         libisoburn \
         age && \
     mkdir -p /libexec/elemental-checker
-
 RUN dracut --regenerate-all
 
 # Add elemental-register
 COPY build/elemental-operator/build/elemental-register /usr/sbin/elemental-register
 COPY build/elemental-operator/build/elemental-support /usr/sbin/elemental-support
 # Add the elemental-cli
-COPY --from=toolkit /usr/bin/elemental /usr/bin/elemental
+COPY build/elemental-toolkit/build/elemental /usr/bin/elemental
+
+# Add system files
+COPY framework/ /
+RUN rsync -a /files/* / && rm -r /files
 
 # Add the elemental-system-agent
 ADD --chmod=0755 https://github.com/rancher/system-agent/releases/download/${RANCHER_SYSTEM_AGENT_VERSION}/rancher-system-agent-amd64 /usr/sbin/elemental-system-agent
 
 # Enable essential services
 RUN systemctl enable systemd-networkd.service
-RUN mv /boot/vmlinuz-linux /boot/vmlinuz-$(uname -r)
+
+# Workaround for elemental to determine kernel version for Arch Linux
+RUN cp /boot/vmlinuz-linux /boot/Image-$(uname -r)
 
 # Init elemental system utils
-RUN elemental init --debug --force
+RUN elemental --debug init --force autologin boot-assessment cloud-config-defaults cloud-config-essentials dracut-config elemental-rootfs elemental-setup elemental-sysroot grub-config
 
 # Update os-release file with some metadata
 RUN echo TIMESTAMP="`date +'%Y%m%d%H%M%S'`" >> /etc/os-release && \
@@ -79,7 +81,12 @@ RUN echo TIMESTAMP="`date +'%Y%m%d%H%M%S'`" >> /etc/os-release && \
 RUN rm -r /var/cache/pacman/pkg/*
 
 RUN mkdir -p /usr/lib/elemental/bootloader && \
-    grub-mkimage -O x86_64-efi -o grubx64.efi -p '(tftp)/grub' efinet tftp && \
+    grub-mkimage -c /etc/elemental/bootargs.cfg -O x86_64-efi -o grubx64.efi -p '(cd0)/EFI/BOOT/' \
+        boot linux linux16 chain normal configfile \
+        part_gpt part_msdos fat iso9660 udf \
+        test true keystatus loopback regexp probe \
+        efi_gop efi_uga all_video gfxterm font \
+        echo read help ls cat halt reboot && \
     mv grubx64.efi /usr/lib/elemental/bootloader/grubx64.efi && \
     cp /usr/share/shim-signed/shimx64.efi /usr/lib/elemental/bootloader/shimx64.efi && \
     cp /usr/share/shim-signed/mmx64.efi /usr/lib/elemental/bootloader/mmx64.efi
